@@ -1,0 +1,11 @@
+{
+    "name": "adquesto/adquesto-php-sdk",
+    "description": "Adquesto PHP integration toolkit",
+    "type": "library",
+    "require": {
+        "sunra/php-simple-html-dom-parser": "v1.5.2"
+    },
+    "autoload": {
+        "psr-4": {"Adquesto\\SDK\\": "src/"}
+    }
+}
