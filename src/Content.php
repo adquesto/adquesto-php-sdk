@@ -4,7 +4,7 @@ namespace Adquesto\SDK;
 
 class Content
 {
-    /** 
+    /**
      * @var string 
      */
     private $apiUrl;
@@ -25,10 +25,10 @@ class Content
     private $contextProcessors;
 
     /**
-     * @param $apiUrl string Base Adquesto API URL
-     * @param $serviceId string Service UUID
-     * @param $storage Storage Implementation to persist javascript file contents
-     * @param $contextProcessors ContextProvider[] Used to render template values
+     * @param string $apiUrl Base Adquesto API URL
+     * @param string $serviceId Service UUID
+     * @param Storage $storage Implementation to persist javascript file contents
+     * @param ContextProvider[] $contextProcessors Used to render template values
     */
     public function __construct($apiUrl, $serviceId, Storage $storage, array $contextProcessors = array())
     {
@@ -61,7 +61,7 @@ class Content
     }
 
     /**
-     * @param $contextProviders mixed An array or single ContextProvider instance
+     * @param mixed $contextProviders An array or single ContextProvider instance
      * @return mixed[]
      */
     protected function contentValues($contextProviders = null)
@@ -86,7 +86,7 @@ class Content
     }
 
     /**
-     * @param $contextProviders mixed An array or single ContextProvider instance
+     * @param mixed $contextProviders An array or single ContextProvider instance
      * @return string
      */
     public function javascript($contextProviders = null)
@@ -105,6 +105,9 @@ class Content
         return str_replace(array_keys($mergedContentValues), array_values($mergedContentValues), $javascript);
     }
 
+    /**
+     * @return string
+     */
     protected function getStructureDataPaywall()
     {
         return <<< STR
@@ -115,6 +118,13 @@ class Content
 STR;
     }
 
+    /**
+     * @param simple_html_dom_node $parent
+     * @param string               $type
+     * @param boolean              $allowFalseValues
+     * @return int
+     * @return bool
+     */
     private function getNumberOfCharactersBySize($parent, $type, $allowFalseValues)
     {
         $numberOfCharacters = 0;
@@ -136,6 +146,10 @@ STR;
         return $numberOfCharacters;
     }
 
+    /**
+     * @param string $str
+     * @return string
+     */
     private static function safeStrlen($str)
     {
         if (function_exists('mb_strlen')) {
@@ -145,6 +159,13 @@ STR;
         return strlen($str);
     }
 
+    /**
+     * @param string $originalContent
+     * @param string $containerMainQuest
+     * @param string $containerReminderQuest
+     * @param string $javascript
+     * @return string
+     */
     public function prepare($originalContent, $containerMainQuest, $containerReminderQuest, $javascript)
     {
         $content = $originalContent;
