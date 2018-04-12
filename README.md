@@ -1,4 +1,4 @@
-# AdQuesto PHP SDK
+# Adquesto PHP SDK
 
 Easy custom integration with only few steps required to start displaying ads.
 
