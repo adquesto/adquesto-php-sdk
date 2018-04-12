@@ -2,8 +2,6 @@
 
 namespace Adquesto\SDK;
 
-use Questo\Service\ConfigService;
-
 class WordpressStorage implements Storage
 {
     const OPTION_JAVASCRIPT = 'questo_javascript';
@@ -11,7 +9,7 @@ class WordpressStorage implements Storage
 
     public function get()
     {
-        return get_option(ConfigService::OPTION_JAVASCRIPT);
+        return get_option(static::OPTION_JAVASCRIPT);
     }
 
     public function set($contents)
@@ -22,7 +20,7 @@ class WordpressStorage implements Storage
 
     public function valid()
     {
-        $lastUpdate = (int) get_option(ConfigService::OPTION_JAVASCRIPT_LAST_UPDATE_TIME);
+        $lastUpdate = (int) get_option(static::OPTION_JAVASCRIPT_LAST_UPDATE_TIME);
         $previousDay = time() - (60 * 60 * 24);
 
         //update javascript every 24h
