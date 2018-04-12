@@ -2,6 +2,8 @@
 
 namespace Adquesto\SDK;
 
+use Sunra\PhpSimple\HtmlDomParser;
+
 class Content
 {
     /**
