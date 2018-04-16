@@ -2,36 +2,37 @@
 
 namespace Adquesto\SDK;
 
+use simplehtmldom_1_5\simple_html_dom_node;
 use Sunra\PhpSimple\HtmlDomParser;
 
 class Content
 {
     /**
-     * @var string 
+     * @var string
      */
     private $apiUrl;
 
-    /** 
-     * @var string 
+    /**
+     * @var string
      */
     private $serviceId;
 
-    /** 
-     * @var Storage 
+    /**
+     * @var Storage
      */
     private $storage;
 
     /**
-     * @var ContextProvider[] 
+     * @var ContextProvider[]
      */
-    private $contextProcessors;
+    private $contentProcessors;
 
     /**
      * @param string $apiUrl Base Adquesto API URL
      * @param string $serviceId Service UUID
      * @param Storage $storage Implementation to persist javascript file contents
      * @param ContextProvider[] $contextProcessors Used to render template values
-    */
+     */
     public function __construct($apiUrl, $serviceId, Storage $storage, array $contextProcessors = array())
     {
         $this->apiUrl = $apiUrl;
@@ -150,7 +151,7 @@ STR;
 
     /**
      * @param string $str
-     * @return string
+     * @return int
      */
     private static function safeStrlen($str)
     {
@@ -175,22 +176,34 @@ STR;
         //check if the content has questo-here from tinyMCE plugin
         $hasQuestoHereInContent = strrpos($content, $containerQuestoHere) !== false;
 
+        $wrapperId = 'adquestoWrapper';
+        $dom = HtmlDomParser::str_get_html(sprintf('<div id="%s">%s</div>', $wrapperId, $content));
+        $paragraphs = $dom->getElementById($wrapperId)->childNodes();
+
+        $content = $this->getStructureDataPaywall();
+        $questoHereIncluded = false;
+
         if ($hasQuestoHereInContent) {
-            $content = preg_replace('/' . $containerQuestoHere . '.*?><\/div>$/mi', $containerMainQuest, $content);
+            foreach ($paragraphs as $key => $paragraph) {
+                if ($paragraph->class == 'questo-here') {
+                    $content .= $containerMainQuest;
+                    $questoHereIncluded = true;
+                    continue;
+                }
+
+                if ($questoHereIncluded) {
+                    $paragraph->class = 'questo-paywall';
+                }
+                $content .= $paragraph->outertext();
+            }
+
             $content .= $containerReminderQuest;
             $content .= $javascript;
 
             return $content;
         }
 
-        $wrapperId = 'adquestoWrapper';
-        $dom = HtmlDomParser::str_get_html(sprintf('<div id="%s">%s</div>', $wrapperId, $content));
-        $paragraphs = $dom->getElementById($wrapperId)->childNodes();
-
-        $content = $this->getStructureDataPaywall();
         $numberOfCharacters = 0;
-        $questoHereIncluded = false;
-
         foreach ($paragraphs as $key => $paragraph) {
             $numberOfCharacters += $this->safeStrlen($paragraph->text());
             $numberOfCharacters += $this->getNumberOfCharactersBySize($paragraph, 'img', true);
