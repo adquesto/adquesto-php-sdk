@@ -73,6 +73,25 @@ $preparedContent = $adquesto->prepare(
 
 Now `preparedContent` is ready to be placed on website.
 
+### Forced Javascript update
+
+From time to time we might call your endpoint to tell that there is new Javascript file available so that you can update it in your Storage.
+
+Best practice is to expose publicly available endpoint that can accept GET and trigger fetching javascript once again, replace only when it succeeded.
+
+You should respond with JSON `{"status": "OK"}`. If not, we will retry every 30 minutes for 3 hours, then once a day for a week.
+
+![Image of Yaktocat](https://www.websequencediagrams.com/cgi-bin/cdraw?lz=dGl0bGUgSmF2YXNjcmlwdCBmb3JjZSB1cGRhdGUgcHJvY2VkdXJlCgpBZHF1ZXN0by0-SW50ZWdyYXRpb246IEdFVCAveW91ci0ALQYtZW5kcG9pbnQKIyBub3RlIHJpZ2h0IG9mIEJhY2tlbmQ6IFJlYWRlciBVVUlEIGlzIGdlbmVyYXRlZAoAIg4AWg1JbnZhbGkAgQ8FU3RvcmFnZQoAfAstPgCBFggAgQsGbmV3AIFICwCBIxlOABkOAGQbU2F2ZSBpdCBpbgB2CQBoGFJlc3BvbmQgd2l0aCBKU09OIHN0YXR1cyBPSwCBWwZsZWYAggsFAIEpCklmIG5vdCwgd2Ugd2lsbCByZXRyeQoKI0Jyb3dzZXItPgACBzogTmV4dCBnZXQgcgCCPgZyZQCDEAUKIwCCXA8AKAhVc2UgZGlzayBjYWNoZQBGDQCDBghHZXQgUXVlc3QAgSwGACQFZACDGAwK&s=patent)
+
+Example below shows details of how javascript could be replaced with new one:
+
+```php
+$javascript = $adquesto->requestJavascript();
+if ($javascript) {
+    $content->getStorage()->set($javascript);
+}
+```
+
 ## Overview
 
 ### Storages
