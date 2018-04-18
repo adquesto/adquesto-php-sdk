@@ -71,7 +71,7 @@ $preparedContent = $adquesto->prepare(
 );
 ```
 
-Now `preparedContent` is ready to placed on website.
+Now `preparedContent` is ready to be placed on website.
 
 ## Overview
 
