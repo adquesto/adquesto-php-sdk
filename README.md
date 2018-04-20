@@ -63,7 +63,7 @@ We provide method to help you place ad in best spot inside HTML content. To make
 *  `javascript` it output of the method above
 
 ```php
-$preparedContent = $adquesto->prepare(
+$preparedContent = $adquesto->autoPrepare(
     $htmlContent,
     $adContainerHtml,
     $reminderAdContainerHtml,
@@ -72,6 +72,24 @@ $preparedContent = $adquesto->prepare(
 ```
 
 Now `preparedContent` is ready to be placed on website.
+
+You can also use function below to find `<div class="questo-here"></div>` and replace with the ad:
+```php
+$preparedContent = $adquesto->manualPrepare(
+    $htmlContent,
+    $adContainerHtml,
+    $reminderAdContainerHtml,
+    $javascript
+);
+```
+
+If you just want to check if there is a div in the content use:
+```php
+$hasQuesto = $adquesto->hasQuestoInContent($content);
+```
+
+The function will return `true` if `<div class="questo-here"></div>` exists in the content.
+
 
 ### Forced Javascript update
 
