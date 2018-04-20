@@ -7,6 +7,9 @@ use Sunra\PhpSimple\HtmlDomParser;
 
 class Content
 {
+    const PAYWALL_CLASS = 'questo-paywall';
+    const MANUAL_QUEST_CLASS = 'questo-here';
+
     /**
      * @var string
      */
@@ -28,9 +31,9 @@ class Content
     private $contentProcessors;
 
     /**
-     * @param string $apiUrl Base Adquesto API URL
-     * @param string $serviceId Service UUID
-     * @param Storage $storage Implementation to persist javascript file contents
+     * @param string            $apiUrl Base Adquesto API URL
+     * @param string            $serviceId Service UUID
+     * @param Storage           $storage Implementation to persist javascript file contents
      * @param ContextProvider[] $contextProcessors Used to render template values
      */
     public function __construct($apiUrl, $serviceId, Storage $storage, array $contextProcessors = array())
@@ -70,7 +73,7 @@ class Content
     protected function contentValues($contextProviders = null)
     {
         $contentValues = array();
-        $contextProcessors = array_merge($this->contentProcessors, (array) $contextProviders);
+        $contextProcessors = array_merge($this->contentProcessors, (array)$contextProviders);
         foreach ($contextProcessors as $contentProcessor) {
             $contentValues = array_merge($contentValues, $contentProcessor->values());
         }
@@ -113,12 +116,11 @@ class Content
      */
     protected function getStructureDataPaywall()
     {
-        return <<< STR
+        return sprintf('
         <script type="application/ld+json"> 
         {"@context": "http://schema.org", "@type": "NewsArticle", "mainEntityOfPage": {"@type": "WebPage", "@id": "https://example.org/article"}, 
-        "isAccessibleForFree": "False", "hasPart": [{"@type": "WebPageElement", "isAccessibleForFree": "False", "cssSelector" : ".questo-paywall"} ] }
-        </script>
-STR;
+        "isAccessibleForFree": "False", "hasPart": [{"@type": "WebPageElement", "isAccessibleForFree": "False", "cssSelector" : ".%s"} ] }
+        </script>', self::PAYWALL_CLASS);
     }
 
     /**
@@ -163,36 +165,52 @@ STR;
     }
 
     /**
+     * @param string $content
+     * @return null|simple_html_dom_node|simple_html_dom_node[]
+     */
+    public function getParagraphs($content)
+    {
+        $wrapperId = 'adquestoWrapper';
+        $dom = HtmlDomParser::str_get_html(sprintf('<div id="%s">%s</div>', $wrapperId, $content));
+        return $dom->getElementById($wrapperId)->childNodes();
+    }
+
+    /**
+     * @param string $content
+     * @return bool
+     */
+    public function hasQuestoInContent($content)
+    {
+        $containerQuestoHere = sprintf('<div class="%s"', self::MANUAL_QUEST_CLASS);
+        return strrpos($content, $containerQuestoHere) !== false;;
+    }
+
+    /**
+     * Check Content::MANUAL_QUEST_CLASS class in the content, if exists put quests in the content
+     *
      * @param string $originalContent
      * @param string $containerMainQuest
      * @param string $containerReminderQuest
      * @param string $javascript
-     * @return string
+     * @return string|bool
      */
-    public function prepare($originalContent, $containerMainQuest, $containerReminderQuest, $javascript)
+    public function manualPrepare($originalContent, $containerMainQuest, $containerReminderQuest, $javascript)
     {
-        $content = $originalContent;
-        $containerQuestoHere = '<div class="questo-here"';
-        //check if the content has questo-here from tinyMCE plugin
-        $hasQuestoHereInContent = strrpos($content, $containerQuestoHere) !== false;
-
-        $wrapperId = 'adquestoWrapper';
-        $dom = HtmlDomParser::str_get_html(sprintf('<div id="%s">%s</div>', $wrapperId, $content));
-        $paragraphs = $dom->getElementById($wrapperId)->childNodes();
-
         $content = $this->getStructureDataPaywall();
+        $paragraphs = $this->getParagraphs($originalContent);
         $questoHereIncluded = false;
+        $hasQuestoHereInContent = $this->hasQuestoInContent($originalContent);
 
         if ($hasQuestoHereInContent) {
             foreach ($paragraphs as $key => $paragraph) {
-                if ($paragraph->class == 'questo-here') {
+                if ($paragraph->class == self::MANUAL_QUEST_CLASS) {
                     $content .= $containerMainQuest;
                     $questoHereIncluded = true;
                     continue;
                 }
 
                 if ($questoHereIncluded) {
-                    $paragraph->class = 'questo-paywall';
+                    $paragraph->class = self::PAYWALL_CLASS;
                 }
                 $content .= $paragraph->outertext();
             }
@@ -203,6 +221,25 @@ STR;
             return $content;
         }
 
+        return $originalContent;
+    }
+
+    /**
+     * Try to automatically put quests in the content based on the number of characters, images, iframe
+     *
+     * @param string $originalContent
+     * @param string $containerMainQuest
+     * @param string $containerReminderQuest
+     * @param string $javascript
+     * @return string
+     */
+    public function autoPrepare($originalContent, $containerMainQuest, $containerReminderQuest, $javascript)
+    {
+        $paragraphs = $this->getParagraphs($originalContent);
+        $content = $this->getStructureDataPaywall();
+
+        $questoHereIncluded = false;
+
         $numberOfCharacters = 0;
         foreach ($paragraphs as $key => $paragraph) {
             $numberOfCharacters += $this->safeStrlen($paragraph->text());
@@ -211,7 +248,7 @@ STR;
 
             if ($questoHereIncluded) {
                 //we have to reset number of character to check number of characters after ad
-                $paragraph->class = 'questo-paywall';
+                $paragraph->class = self::PAYWALL_CLASS;
             }
 
             $content .= $paragraph->outertext();
