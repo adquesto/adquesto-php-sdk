@@ -176,13 +176,12 @@ class Content
     }
 
     /**
-     * @param string $content
+     * @param string $string
      * @return bool
      */
-    public function hasQuestoInContent($content)
+    public function hasQuestoInString($string)
     {
-        $containerQuestoHere = sprintf('<div class="%s"', self::MANUAL_QUEST_CLASS);
-        return strrpos($content, $containerQuestoHere) !== false;;
+        return strpos($string, self::MANUAL_QUEST_CLASS) !== false;
     }
 
     /**
@@ -199,13 +198,15 @@ class Content
         $content = $this->getStructureDataPaywall();
         $paragraphs = $this->getParagraphs($originalContent);
         $questoHereIncluded = false;
-        $hasQuestoHereInContent = $this->hasQuestoInContent($originalContent);
+        $hasQuestoHereInContent = $this->hasQuestoInString($originalContent);
 
         if ($hasQuestoHereInContent) {
             foreach ($paragraphs as $key => $paragraph) {
-                if ($paragraph->class == self::MANUAL_QUEST_CLASS) {
-                    $content .= $containerMainQuest;
-                    $questoHereIncluded = true;
+                if ($this->hasQuestoInString($paragraph->class)) {
+                    if (!$questoHereIncluded) {
+                        $content .= $containerMainQuest;
+                        $questoHereIncluded = true;
+                    }
                     continue;
                 }
 
