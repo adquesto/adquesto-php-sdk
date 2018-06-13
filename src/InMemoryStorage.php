@@ -2,7 +2,7 @@
 
 namespace Adquesto\SDK;
 
-class InMemoryStorage implements Storage
+class InMemoryStorage implements JavascriptStorage
 {
     private $contents;
     

@@ -2,7 +2,7 @@
 
 namespace Adquesto\SDK;
 
-interface Storage
+interface JavascriptStorage
 {
     public function get();
 

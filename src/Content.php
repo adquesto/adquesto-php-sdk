@@ -21,35 +21,43 @@ class Content
     private $serviceId;
 
     /**
-     * @var Storage
+     * @var JavascriptStorage
      */
-    private $storage;
+    private $javascriptStorage;
+
+    /**
+     * @var HttpClient
+     */
+    private $httpClient;
 
     /**
      * @var ContextProvider[]
      */
-    private $contentProcessors;
+    private $contextProviders;
 
     /**
      * @param string            $apiUrl Base Adquesto API URL
      * @param string            $serviceId Service UUID
-     * @param Storage           $storage Implementation to persist javascript file contents
-     * @param ContextProvider[] $contextProcessors Used to render template values
+     * @param JavascriptStorage $javascriptStorage Implementation to persist javascript file contents
+     * @param HttpClient        $httpClient Implementation to fetch data from API
+     * @param ContextProvider[] $contextProviders Used to render template values
      */
-    public function __construct($apiUrl, $serviceId, Storage $storage, array $contextProcessors = array())
+    public function __construct($apiUrl, $serviceId, JavascriptStorage $javascriptStorage, HttpClient $httpClient, 
+        array $contextProviders = array())
     {
         $this->apiUrl = $apiUrl;
         $this->serviceId = $serviceId;
-        $this->storage = $storage;
-        $this->contentProcessors = $contextProcessors;
+        $this->javascriptStorage = $javascriptStorage;
+        $this->httpClient = $httpClient;
+        $this->contextProviders = $contextProviders;
     }
 
     /**
-     * @return Storage
+     * @return JavascriptStorage
      */
     public function getStorage()
     {
-        return $this->storage;
+        return $this->javascriptStorage;
     }
 
     /**
@@ -70,15 +78,15 @@ class Content
      * @param mixed $contextProviders An array or single ContextProvider instance
      * @return mixed[]
      */
-    protected function contentValues($contextProviders = null)
+    protected function contextValues($contextProviders = null)
     {
-        $contentValues = array();
-        $contextProcessors = array_merge($this->contentProcessors, (array)$contextProviders);
-        foreach ($contextProcessors as $contentProcessor) {
-            $contentValues = array_merge($contentValues, $contentProcessor->values());
+        $contextValues = array();
+        $contextProviders = array_merge($this->contextProviders, (array)$contextProviders);
+        foreach ($contextProviders as $contextProvider) {
+            $contextValues = array_merge($contextValues, $contextProvider->values());
         }
 
-        return $contentValues;
+        return $contextValues;
     }
 
     /**
@@ -86,7 +94,7 @@ class Content
      */
     public function requestJavascript()
     {
-        return @file_get_contents(
+        return $this->httpClient->get(
             sprintf('%s%s/javascript', $this->apiUrl, $this->serviceId())
         );
     }
@@ -97,18 +105,18 @@ class Content
      */
     public function javascript($contextProviders = null)
     {
-        if (!$this->storage->valid()) {
+        if (!$this->javascriptStorage->valid()) {
             $remoteJavascript = $this->requestJavascript();
 
             if ($remoteJavascript) {
-                $this->storage->set($remoteJavascript);
+                $this->javascriptStorage->set($remoteJavascript);
             }
         }
 
-        $javascript = $this->storage->get();
-        $mergedContentValues = $this->contentValues($contextProviders);
+        $javascript = $this->javascriptStorage->get();
+        $mergedContextValues = $this->contextValues($contextProviders);
 
-        return str_replace(array_keys($mergedContentValues), array_values($mergedContentValues), $javascript);
+        return str_replace(array_keys($mergedContextValues), array_values($mergedContextValues), $javascript);
     }
 
     /**
@@ -217,7 +225,7 @@ class Content
             }
 
             $content .= $containerReminderQuest;
-            $content .= $javascript;
+            $content .= '<script type="text/javascript">' . $javascript . '</script>';
 
             return $content;
         }
@@ -263,7 +271,7 @@ class Content
 
         if ($numberOfCharacters >= 1000) {
             $content .= $containerReminderQuest;
-            $content .= $javascript;
+            $content .= '<script type="text/javascript">' . $javascript . '</script>';
 
             return $content;
         }
