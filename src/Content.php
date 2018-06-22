@@ -8,7 +8,7 @@ use Sunra\PhpSimple\HtmlDomParser;
 class Content
 {
     const PAYWALL_CLASS = 'questo-paywall';
-    const MANUAL_QUEST_CLASS = 'questo-here';
+    const MANUAL_QUEST_CLASS = 'questo-should-be-inserted-here';
 
     /**
      * @var string
@@ -190,6 +190,15 @@ class Content
     public function hasQuestoInString($string)
     {
         return strpos($string, self::MANUAL_QUEST_CLASS) !== false;
+    }
+
+    /**
+     * @param string $html
+     * @return bool
+     */
+    public function hasQuestoClassInHTML($html)
+    {
+        return (bool)preg_match('/class="(.*)' . self::MANUAL_QUEST_CLASS . '(.*)"/m', $html);
     }
 
     /**
