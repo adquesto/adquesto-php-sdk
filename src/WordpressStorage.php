@@ -2,7 +2,7 @@
 
 namespace Adquesto\SDK;
 
-class WordpressStorage implements Storage
+class WordpressStorage implements JavascriptStorage
 {
     const OPTION_JAVASCRIPT = 'questo_javascript';
     const OPTION_JAVASCRIPT_LAST_UPDATE_TIME = 'questo_javascript_last_update_time';
