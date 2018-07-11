@@ -152,6 +152,7 @@ Most important context provider which tells names of HTML containers that are us
 
 * `mainQuestId` Main ad element ID name (eg. `questo-container`)
 * `reminderQuestId` Reminder ad element ID (eg. `questo-reminder-container`)
+* `isDraft` Should Ad be displayed as a draft (false as default)
 
 By default both are generated with random string.
 
