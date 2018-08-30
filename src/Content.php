@@ -42,8 +42,8 @@ class Content
      * @param HttpClient        $httpClient Implementation to fetch data from API
      * @param ContextProvider[] $contextProviders Used to render template values
      */
-    public function __construct($apiUrl, $serviceId, JavascriptStorage $javascriptStorage, HttpClient $httpClient, 
-        array $contextProviders = array())
+    public function __construct($apiUrl, $serviceId, JavascriptStorage $javascriptStorage, HttpClient $httpClient,
+                                array $contextProviders = array())
     {
         $this->apiUrl = $apiUrl;
         $this->serviceId = $serviceId;
@@ -132,31 +132,112 @@ class Content
     }
 
     /**
+     * @param simple_html_dom_node $element
+     * @param bool                 $allowFalseValues
+     * @return int
+     */
+    private function getNumberOfCharactersBySizeFromElement($element, $allowFalseValues)
+    {
+        $width = $element->getAttribute('width');
+        $height = $element->getAttribute('height');
+        $hasCorrectSize = $width >= 150 && $height >= 150;
+        if (!$allowFalseValues && $hasCorrectSize) {
+            return 500;
+        }
+        if ($allowFalseValues && ($hasCorrectSize || $width === false || $height === false)) {
+            return 500;
+        }
+
+        return 0;
+    }
+
+    /**
      * @param simple_html_dom_node $parent
      * @param string               $type
      * @param boolean              $allowFalseValues
      * @return int
-     * @return bool
      */
     private function getNumberOfCharactersBySize($parent, $type, $allowFalseValues)
     {
-        $numberOfCharacters = 0;
+        $numberOfCharacters = $this->getNumberOfCharactersBySizeFromElement($parent, $allowFalseValues);
         $elements = $parent->find($type);
         foreach ($elements as $element) {
-            $width = $element->getAttribute('width');
-            $height = $element->getAttribute('height');
-            $hasCorrectSize = $width >= 150 && $height >= 150;
-            if (!$allowFalseValues && $hasCorrectSize) {
-                $numberOfCharacters += 500;
-                continue;
-            }
-            if ($allowFalseValues && ($hasCorrectSize || $width === false || $height === false)) {
-                $numberOfCharacters += 500;
-                continue;
-            }
+            $this->getNumberOfCharactersBySizeFromElement($element, $allowFalseValues);
         }
 
         return $numberOfCharacters;
+    }
+
+    /**
+     * @return array
+     */
+    public function getVideoUrls()
+    {
+        return array(
+            'youtube.com/embed',
+            'facebook.com/plugins/video.php',
+            'player.twitch.tv',
+            'fast.wistia.net/embed/iframe',
+        );
+    }
+
+    /**
+     * @param string $src
+     * @return bool
+     */
+    public function isVideoUrl($src)
+    {
+        foreach ($this->getVideoUrls() as $url) {
+            $isVideoUrl = (bool)preg_match('(' . preg_quote($url) . ')', $src);
+
+            if ($isVideoUrl) {
+                return $isVideoUrl;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param simple_html_dom_node $element
+     * @return bool
+     */
+    public function isVideoElement($element)
+    {
+        if ($element->tag == 'video') {
+            return True;
+        }
+
+        if ($element->tag == 'iframe') {
+            $hasVideoUrl = $this->isVideoUrl($element->getAttribute('src'));
+
+            if ($hasVideoUrl) {
+                return True;
+            }
+        }
+
+        $elements = $element->childNodes();
+        foreach ($elements as $element) {
+            if ($this->isVideoElement($element)) {
+                return True;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param simple_html_dom_node $parent
+     * @param boolean              $questoHereIncluded
+     * @return int
+     */
+    private function getNumberOfCharactersFromVideo($parent, $questoHereIncluded)
+    {
+        if ($questoHereIncluded && $this->isVideoElement($parent)) {
+            return 1200;
+        }
+
+        return 0;
     }
 
     /**
@@ -176,7 +257,7 @@ class Content
      * @param string $content
      * @return null|simple_html_dom_node|simple_html_dom_node[]
      */
-    public function getParagraphs($content)
+    public function getChildNodesFromContent($content)
     {
         $wrapperId = 'adquestoWrapper';
         $dom = HtmlDomParser::str_get_html(sprintf('<div id="%s">%s</div>', $wrapperId, $content));
@@ -213,7 +294,7 @@ class Content
     public function manualPrepare($originalContent, $containerMainQuest, $containerReminderQuest, $javascript)
     {
         $content = $this->getStructureDataPaywall();
-        $paragraphs = $this->getParagraphs($originalContent);
+        $paragraphs = $this->getChildNodesFromContent($originalContent);
         $questoHereIncluded = false;
         $hasQuestoHereInContent = $this->hasQuestoInString($originalContent);
 
@@ -253,7 +334,7 @@ class Content
      */
     public function autoPrepare($originalContent, $containerMainQuest, $containerReminderQuest, $javascript)
     {
-        $paragraphs = $this->getParagraphs($originalContent);
+        $paragraphs = $this->getChildNodesFromContent($originalContent);
         $content = $this->getStructureDataPaywall();
 
         $questoHereIncluded = false;
@@ -263,6 +344,7 @@ class Content
             $numberOfCharacters += $this->safeStrlen($paragraph->text());
             $numberOfCharacters += $this->getNumberOfCharactersBySize($paragraph, 'img', true);
             $numberOfCharacters += $this->getNumberOfCharactersBySize($paragraph, 'iframe', false);
+            $numberOfCharacters += $this->getNumberOfCharactersFromVideo($paragraph, $questoHereIncluded);
 
             if ($questoHereIncluded) {
                 //we have to reset number of character to check number of characters after ad
@@ -278,7 +360,7 @@ class Content
             }
         }
 
-        if ($numberOfCharacters >= 1000) {
+        if ($numberOfCharacters >= 1200) {
             $content .= $containerReminderQuest;
             $content .= '<script type="text/javascript">' . $javascript . '</script>';
 
