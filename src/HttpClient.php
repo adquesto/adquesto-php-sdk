@@ -5,12 +5,19 @@ namespace Adquesto\SDK;
 interface HttpClient
 {
     /**
-     * @throws NetworkErrorException
+     * @param $url
+     * @param array $headers
+     * @param bool $throwWhenNot200
+     * @return string
      */
-    public function get($url, array $headers = array());
+    public function get($url, array $headers = array(), $throwWhenNot200 = false);
 
     /**
-     * @throws NetworkErrorException
+     * @param $url
+     * @param array $data
+     * @param array $headers
+     * @param bool $throwWhenNot200
+     * @return string
      */
-    public function post($url, array $data = array(), array $headers = array());
+    public function post($url, array $data = array(), array $headers = array(), $throwWhenNot200 = false);
 }

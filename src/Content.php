@@ -94,9 +94,13 @@ class Content
      */
     public function requestJavascript()
     {
-        return $this->httpClient->get(
-            sprintf('%s%s/javascript', $this->apiUrl, $this->serviceId())
+        $response = $this->httpClient->get(
+            sprintf('%s%s/javascript', $this->apiUrl, $this->serviceId()),
+            array(),
+            true
         );
+
+        return $response;
     }
 
     /**

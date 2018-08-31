@@ -19,6 +19,7 @@
         }
     },
     "suggest": {
-        "ext-curl": "Needed to support CurlHttpClient implementation"
+        "ext-curl": "Needed to support CurlHttpClient implementation",
+        "ext-json": "Needed to provide Subscribers login via OAuth"
     }
 }
