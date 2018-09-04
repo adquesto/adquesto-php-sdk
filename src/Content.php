@@ -138,18 +138,21 @@ class Content
     /**
      * @param simple_html_dom_node $element
      * @param bool                 $allowFalseValues
+     * @param string               $type
      * @return int
      */
-    private function getNumberOfCharactersBySizeFromElement($element, $allowFalseValues)
+    private function getNumberOfCharactersBySizeFromElement($element, $allowFalseValues, $type)
     {
-        $width = $element->getAttribute('width');
-        $height = $element->getAttribute('height');
-        $hasCorrectSize = $width >= 150 && $height >= 150;
-        if (!$allowFalseValues && $hasCorrectSize) {
-            return 500;
-        }
-        if ($allowFalseValues && ($hasCorrectSize || $width === false || $height === false)) {
-            return 500;
+        if ($element->tag == $type) {
+            $width = $element->getAttribute('width');
+            $height = $element->getAttribute('height');
+            $hasCorrectSize = $width >= 150 && $height >= 150;
+            if (!$allowFalseValues && $hasCorrectSize) {
+                return 500;
+            }
+            if ($allowFalseValues && ($hasCorrectSize || $width === false || $height === false)) {
+                return 500;
+            }
         }
 
         return 0;
@@ -163,10 +166,10 @@ class Content
      */
     private function getNumberOfCharactersBySize($parent, $type, $allowFalseValues)
     {
-        $numberOfCharacters = $this->getNumberOfCharactersBySizeFromElement($parent, $allowFalseValues);
+        $numberOfCharacters = $this->getNumberOfCharactersBySizeFromElement($parent, $allowFalseValues, $type);
         $elements = $parent->find($type);
         foreach ($elements as $element) {
-            $this->getNumberOfCharactersBySizeFromElement($element, $allowFalseValues);
+            $numberOfCharacters += $this->getNumberOfCharactersBySizeFromElement($element, $allowFalseValues, $type);
         }
 
         return $numberOfCharacters;
@@ -349,13 +352,13 @@ class Content
             $numberOfCharacters += $this->getNumberOfCharactersBySize($paragraph, 'img', true);
             $numberOfCharacters += $this->getNumberOfCharactersBySize($paragraph, 'iframe', false);
             $numberOfCharacters += $this->getNumberOfCharactersFromVideo($paragraph, $questoHereIncluded);
-
             if ($questoHereIncluded) {
                 //we have to reset number of character to check number of characters after ad
                 $paragraph->class = self::PAYWALL_CLASS;
             }
 
             $content .= $paragraph->outertext();
+
 
             if ($numberOfCharacters >= 1200 && !$questoHereIncluded) {
                 $numberOfCharacters = 0;
