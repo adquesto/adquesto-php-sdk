@@ -185,6 +185,7 @@ class Content
             'facebook.com/plugins/video.php',
             'player.twitch.tv',
             'fast.wistia.net/embed/iframe',
+            'player.vimeo.com/video',
         );
     }
 
