@@ -182,6 +182,7 @@ class Content
     {
         return array(
             'youtube.com/embed',
+            'youtube-nocookie.com/embed',
             'facebook.com/plugins/video.php',
             'player.twitch.tv',
             'fast.wistia.net/embed/iframe',
