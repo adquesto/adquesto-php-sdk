@@ -318,7 +318,7 @@ class Content
                 }
 
                 if ($questoHereIncluded) {
-                    $paragraph->class = self::PAYWALL_CLASS;
+                    $paragraph->class = $this->addClass($paragraph->class, self::PAYWALL_CLASS);
                 }
                 $content .= $paragraph->outertext();
             }
@@ -330,6 +330,13 @@ class Content
         }
 
         return $originalContent;
+    }
+
+    private function addClass($value, $cssClass)
+    {
+        $cssClasses = explode(' ' , $value);
+        $cssClasses[] = $cssClass;
+        return implode(' ', $cssClasses);
     }
 
     /**
@@ -356,7 +363,7 @@ class Content
             $numberOfCharacters += $this->getNumberOfCharactersFromVideo($paragraph, $questoHereIncluded);
             if ($questoHereIncluded) {
                 //we have to reset number of character to check number of characters after ad
-                $paragraph->class = self::PAYWALL_CLASS;
+                $paragraph->class = $this->addClass($paragraph->class, self::PAYWALL_CLASS);
             }
 
             $content .= $paragraph->outertext();
