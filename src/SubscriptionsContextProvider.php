@@ -17,7 +17,7 @@ class SubscriptionsContextProvider implements ContextProvider
 
     private $values;
 
-    public function __construct(array $values)
+    public function __construct(array $values = array())
     {
         $this->values = $values;
     }

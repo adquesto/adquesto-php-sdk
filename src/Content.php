@@ -81,9 +81,18 @@ class Content
     protected function contextValues($contextProviders = null)
     {
         $contextValues = array();
-        $contextProviders = array_merge($this->contextProviders, (array)$contextProviders);
+        if (!is_array($contextProviders)) {
+            $contextProviders = array($contextProviders);
+        }
+        $contextProviders = array_merge($this->contextProviders, $contextProviders);
         foreach ($contextProviders as $contextProvider) {
             $contextValues = array_merge($contextValues, $contextProvider->values());
+        }
+
+        foreach ($contextValues as &$contextValue) {
+            if (is_bool($contextValue)) {
+                $contextValue = $contextValue ? '1' : '0';
+            }
         }
 
         return $contextValues;
