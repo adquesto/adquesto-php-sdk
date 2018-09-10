@@ -13,7 +13,6 @@ class SubscriptionsContextProvider implements ContextProvider
     const AUTHORIZATION_URI = '__AUTHORIZATION_URI__';
     const LOGOUT_URI = '__LOGOUT_URI__';
     const USER_LOGIN = '__USER_LOGIN__';
-    const IS_PUBLISHED = '__IS_PUBLISHED__';
 
     private $values;
 
@@ -34,7 +33,6 @@ class SubscriptionsContextProvider implements ContextProvider
             static::AUTHORIZATION_URI,
             static::LOGOUT_URI,
             static::USER_LOGIN,
-            static::IS_PUBLISHED,
         );
         $defaultValues = array_combine(
             $valueKeys,
