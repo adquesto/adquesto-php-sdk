@@ -50,6 +50,7 @@ use Adquesto\SDK\ElementsContextProvider;
 try {
     $javascript = $adquesto->javascript([
         $elementsProvider = new ElementsContextProvider,
+        new \Adquesto\SDK\SubscriptionsContextProvider,
     ]);
 } catch (Adquesto\SDK\NetworkErrorException $e) {
     // Handle exception here
