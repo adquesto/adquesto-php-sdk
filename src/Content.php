@@ -93,6 +93,7 @@ class Content
             if (is_bool($contextValue)) {
                 $contextValue = $contextValue ? '1' : '0';
             }
+            unset($contextValue);
         }
 
         return $contextValues;
