@@ -112,13 +112,21 @@ The function will return `true` if `<div class="questo-here"></div>` exists in t
 
 ### Forced Javascript update (using Webhook)
 
-From time to time we might call your endpoint to tell that there is new Javascript file available so that you can update it in your Storage.
+From time to time we might call your endpoint to tell that there is new Javascript file available 
+so that you can update it in your Storage.
 
-Best practice is to expose publicly available endpoint that can accept GET and trigger fetching javascript once again, replace only when it succeeded.
+Expose an endpoint to accept POST requests from ours, it will contain following JSON structure:
 
-You should respond with JSON `{"status": "OK"}`. If not, we will retry every 30 minutes for 3 hours, then once a day for a week.
+```json
+{
+  "action": "questo_force_update_javascript"
+}
+```
 
-![Image](https://www.websequencediagrams.com/cgi-bin/cdraw?lz=dGl0bGUgSmF2YXNjcmlwdCBmb3JjZSB1cGRhdGUgcHJvY2VkdXJlCgpBZHF1ZXN0by0-SW50ZWdyYXRpb246IEdFVCAveW91ci0ALQYtZW5kcG9pbnQKIyBub3RlIHJpZ2h0IG9mIEJhY2tlbmQ6IFJlYWRlciBVVUlEIGlzIGdlbmVyYXRlZAoAIg4AWg1JbnZhbGkAgQ8FU3RvcmFnZQoAfAstPgCBFggAgQsGbmV3AIFICwCBIxlOABkOAGQbU2F2ZSBpdCBpbgB2CQBoGFJlc3BvbmQgd2l0aCBKU09OIHN0YXR1cyBPSwCBWwZsZWYAggsFAIEpCklmIG5vdCwgd2Ugd2lsbCByZXRyeQoKI0Jyb3dzZXItPgACBzogTmV4dCBnZXQgcgCCPgZyZQCDEAUKIwCCXA8AKAhVc2UgZGlzayBjYWNoZQBGDQCDBghHZXQgUXVlc3QAgSwGACQFZACDGAwK&s=patent)
+You should respond with JSON `{"status": "OK"}`. If not, we will retry every 30 minutes for 3 hours, 
+then once a day for a week.
+
+![Image](https://www.websequencediagrams.com/cgi-bin/cdraw?lz=dGl0bGUgSmF2YXNjcmlwdCBmb3JjZSB1cGRhdGUgcHJvY2VkdXJlCgpBZHF1ZXN0by0-SW50ZWdyYXRpb246IFBPU1QgL3lvdXItAC4GLWVuZHBvaW50IHdpdGggAC8GXwBRBV8AUAZfagBkCmFjdGlvbgojIG5vdGUgcmlnaHQgb2YgQmFja2VuZDogUmVhZGVyIFVVSUQgaXMgZ2VuZXJhdGVkCgAiDgCBBg1JbnZhbGkAgTsFU3RvcmFnZQoAgSgLLT4AgUIIOiBHRVQgbmV3AIF0CwCBTxlOABkOAGQbU2F2ZSBpdCBpbgB2CQBoGFJlc3BvbmQAgiQGSlNPTiBzdGF0dXMgT0sAgVsGbGVmAIILBQCBKQpJZiBub3QsIHdlIHdpbGwgcmV0cnkKCiNCcm93c2VyLT4AAgc6IE5leHQgZ2V0IHIAgj4GcmUAgzwFCiMAglwPACgIVXNlIGRpc2sgY2FjaGUARg0AgwYIR2V0IFF1ZXMAg1UHACQFZACDGAwK&s=patent)
 
 Example below shows details of how javascript could be replaced with new one:
 
