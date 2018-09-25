@@ -158,10 +158,10 @@ class Content
             $height = $element->getAttribute('height');
             $hasCorrectSize = $width >= 150 && $height >= 150;
             if (!$allowFalseValues && $hasCorrectSize) {
-                return 500;
+                return 300;
             }
             if ($allowFalseValues && ($hasCorrectSize || $width === false || $height === false)) {
-                return 500;
+                return 300;
             }
         }
 
@@ -379,14 +379,14 @@ class Content
             $content .= $paragraph->outertext();
 
 
-            if ($numberOfCharacters >= 1200 && !$questoHereIncluded) {
+            if ($numberOfCharacters >= 500 && !$questoHereIncluded) {
                 $numberOfCharacters = 0;
                 $content .= $containerMainQuest;
                 $questoHereIncluded = true;
             }
         }
 
-        if ($numberOfCharacters >= 1200) {
+        if ($numberOfCharacters >= 1000) {
             $content .= $containerReminderQuest;
             $content .= '<script type="text/javascript">' . $javascript . '</script>';
 
