@@ -163,7 +163,10 @@ Most important context provider which tells names of HTML containers that are us
 * `reminderQuestId` Reminder ad element ID (eg. `questo-reminder-container`)
 * `isDraft` Should Ad be displayed as a draft (false as default)
 
-By default both are generated with random string.
+By default both `mainQuestId` and `reminderQuestId` are generated with random string.
+
+*NOTE*: For all testing purposes, including preview mode in CMS of any kind, 
+`isDraft` should be set to `true`.
 
 #### SubscriptionsContextProvider
 
@@ -184,7 +187,6 @@ new SubscriptionsContextProvider(array(
     SubscriptionsContextProvider::AUTHORIZATION_URI => $authorizationUri,
     SubscriptionsContextProvider::LOGOUT_URI => $logoutUri,
     SubscriptionsContextProvider::USER_LOGIN => $subscriber->email,
-    SubscriptionsContextProvider::IS_PUBLISHED => true /* Is Draft? */,
 ));
 ```
 

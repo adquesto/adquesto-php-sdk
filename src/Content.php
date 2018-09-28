@@ -78,12 +78,9 @@ class Content
      * @param mixed $contextProviders An array or single ContextProvider instance
      * @return mixed[]
      */
-    protected function contextValues($contextProviders = null)
+    protected function contextValues($contextProviders = array())
     {
         $contextValues = array();
-        if (!is_array($contextProviders)) {
-            $contextProviders = array($contextProviders);
-        }
         $contextProviders = array_merge($this->contextProviders, $contextProviders);
         foreach ($contextProviders as $contextProvider) {
             $contextValues = array_merge($contextValues, $contextProvider->values());
@@ -117,7 +114,7 @@ class Content
      * @param mixed $contextProviders An array or single ContextProvider instance
      * @return string
      */
-    public function javascript($contextProviders = null)
+    public function javascript($contextProviders = array())
     {
         if (!$this->javascriptStorage->valid()) {
             $remoteJavascript = $this->requestJavascript();
