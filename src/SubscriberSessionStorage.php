@@ -17,4 +17,9 @@ class SubscriberSessionStorage implements SubscriberStorage
             return unserialize($_SESSION[static::SESSION_KEY]);
         }
     }
+
+    public function drop()
+    {
+        unset($_SESSION[static::SESSION_KEY]);
+    }
 }

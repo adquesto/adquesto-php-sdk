@@ -20,7 +20,9 @@ class SubscriberManager
     {
         $accessToken = $this->oauth2Client->accessToken($token);
         $me = $this->oauth2Client->me($accessToken);
-        $subscriber = new Subscriber($me['email'], new \DateTime($me['subscriptionDate']));
+        $subscriber = new Subscriber(
+            $me['uid'], $me['email'], new \DateTime($me['subscriptionDate']), $me['recurringPayments']
+        );
         $this->storage->persist($subscriber);
         return $subscriber;
     }
