@@ -223,3 +223,31 @@ $subsciber = $subscriberManager->handleRedirect($_GET['code']);
 have information about current Subscriber.
 
 NOTE: It's important to run `$subscriber->isSubscriptionValid()` before anything that is related to ad-free experience.
+
+### Webhooks
+
+We will send POST request to you Service webhook URL with `form-data` with one of the following actions. Each
+action represent changes that need to be undertaken for coherent experience. 
+
+#### Service status update
+
+Action: `questo_update_service_status_option`
+
+Once received you should ask API back for current status. Example:
+
+```php
+$serviceApiUrl = new \Adquesto\SDK\ServiceAPIUrl(
+    'https://api.adquesto.com/v1/publishers/services/',
+    'Paste Service UUID here'
+);
+$service = new \Adquesto\SDK\Service(
+    $serviceApiUrl,
+    new CurlHttpClient
+);
+$serviceStatusResponse = $service->fetchStatus();
+```
+
+In response there is an array which has two keys:
+
+* `status` tells if Service is accepted (bool)
+* `subscription` has subscriptions enabled (bool)
