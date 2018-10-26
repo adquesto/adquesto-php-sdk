@@ -110,33 +110,6 @@ $hasQuesto = $adquesto->hasQuestoInContent($content);
 
 The function will return `true` if `<div class="questo-here"></div>` exists in the content.
 
-### Forced Javascript update (using Webhook)
-
-From time to time we might call your endpoint to tell that there is new Javascript file available 
-so that you can update it in your Storage.
-
-Expose an endpoint to accept POST requests from ours, it will contain following JSON structure:
-
-```json
-{
-  "action": "questo_force_update_javascript"
-}
-```
-
-You should respond with JSON `{"status": "OK"}`. If not, we will retry every 30 minutes for 3 hours, 
-then once a day for a week.
-
-![Image](https://www.websequencediagrams.com/cgi-bin/cdraw?lz=dGl0bGUgSmF2YXNjcmlwdCBmb3JjZSB1cGRhdGUgcHJvY2VkdXJlCgpBZHF1ZXN0by0-SW50ZWdyYXRpb246IFBPU1QgL3lvdXItAC4GLWVuZHBvaW50IHdpdGggAC8GXwBRBV8AUAZfagBkCmFjdGlvbgojIG5vdGUgcmlnaHQgb2YgQmFja2VuZDogUmVhZGVyIFVVSUQgaXMgZ2VuZXJhdGVkCgAiDgCBBg1JbnZhbGkAgTsFU3RvcmFnZQoAgSgLLT4AgUIIOiBHRVQgbmV3AIF0CwCBTxlOABkOAGQbU2F2ZSBpdCBpbgB2CQBoGFJlc3BvbmQAgiQGSlNPTiBzdGF0dXMgT0sAgVsGbGVmAIILBQCBKQpJZiBub3QsIHdlIHdpbGwgcmV0cnkKCiNCcm93c2VyLT4AAgc6IE5leHQgZ2V0IHIAgj4GcmUAgzwFCiMAglwPACgIVXNlIGRpc2sgY2FjaGUARg0AgwYIR2V0IFF1ZXMAg1UHACQFZACDGAwK&s=patent)
-
-Example below shows details of how javascript could be replaced with new one:
-
-```php
-$javascript = $adquesto->requestJavascript();
-if ($javascript) {
-    $content->getStorage()->set($javascript);
-}
-```
-
 ## Overview
 
 ### Javascript Storages
@@ -227,7 +200,9 @@ NOTE: It's important to run `$subscriber->isSubscriptionValid()` before anything
 ### Webhooks
 
 We will send POST request to you Service webhook URL with `form-data` with one of the following actions. Each
-action represent changes that need to be undertaken for coherent experience. 
+action represent changes that need to be undertaken on your end for coherent experience. 
+
+You should respond with JSON `{"status": "OK"}`. If not, we will retry using exponential back-off strategy for 10 times.
 
 #### Service status update
 
@@ -247,7 +222,37 @@ $service = new \Adquesto\SDK\Service(
 $serviceStatusResponse = $service->fetchStatus();
 ```
 
-In response there is an array which has two keys:
+In response there is an array with following keys:
 
-* `status` tells if Service is accepted (bool)
-* `subscription` has subscriptions enabled (bool)
+* `status` tells if Service is accepted (`bool`)
+
+Use this one to turn on and off any ad displaying related activity.
+
+* `subscription` has subscriptions enabled (`bool`)
+
+This one should be used when fetching Javascript plugin, as it tells whether to turn Subscriptions feature on or off.
+
+#### Subscription status update
+
+Action: `questo_update_subscription_option`
+
+This one is fired when Subscription feature is toggled either on or off. Now to fetch the actual value please use same
+method as described for `Service status update`.
+
+#### Forced Javascript update
+
+Action: `questo_force_update_javascript`
+
+From time to time we might call your endpoint to tell that there is new Javascript file available 
+so that you can update it in your Storage.
+
+![Image](https://www.websequencediagrams.com/cgi-bin/cdraw?lz=dGl0bGUgSmF2YXNjcmlwdCBmb3JjZSB1cGRhdGUgcHJvY2VkdXJlCgpBZHF1ZXN0by0-SW50ZWdyYXRpb246IFBPU1QgL3lvdXItAC4GLWVuZHBvaW50IHdpdGggAC8GXwBRBV8AUAZfagBkCmFjdGlvbgojIG5vdGUgcmlnaHQgb2YgQmFja2VuZDogUmVhZGVyIFVVSUQgaXMgZ2VuZXJhdGVkCgAiDgCBBg1JbnZhbGkAgTsFU3RvcmFnZQoAgSgLLT4AgUIIOiBHRVQgbmV3AIF0CwCBTxlOABkOAGQbU2F2ZSBpdCBpbgB2CQBoGFJlc3BvbmQAgiQGSlNPTiBzdGF0dXMgT0sAgVsGbGVmAIILBQCBKQpJZiBub3QsIHdlIHdpbGwgcmV0cnkKCiNCcm93c2VyLT4AAgc6IE5leHQgZ2V0IHIAgj4GcmUAgzwFCiMAglwPACgIVXNlIGRpc2sgY2FjaGUARg0AgwYIR2V0IFF1ZXMAg1UHACQFZACDGAwK&s=patent)
+
+Example below shows details of how javascript could be replaced with new one:
+
+```php
+$javascript = $adquesto->requestJavascript();
+if ($javascript) {
+    $content->getStorage()->set($javascript);
+}
+```
