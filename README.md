@@ -135,6 +135,8 @@ Most important context provider which tells names of HTML containers that are us
 * `mainQuestId` Main ad element ID name (eg. `questo-container`)
 * `reminderQuestId` Reminder ad element ID (eg. `questo-reminder-container`)
 * `isDraft` Should Ad be displayed as a draft (false as default)
+* `hasActiveCampaigns` bool or callable that should hold information about existing campaigns for your Service - changes are 
+triggered using webhook and value is in the response along Service status
 
 By default both `mainQuestId` and `reminderQuestId` are generated with random string.
 
@@ -231,6 +233,8 @@ Use this one to turn on and off any ad displaying related activity.
 * `subscription` has subscriptions enabled (`bool`)
 
 This one should be used when fetching Javascript plugin, as it tells whether to turn Subscriptions feature on or off.
+
+* `hasActiveCampaigns` are there any campaigns and quests that are eligible to display by your Service.
 
 #### Subscription status update
 
