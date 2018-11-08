@@ -36,20 +36,27 @@ class Content
     private $contextProviders;
 
     /**
-     * @param string            $apiUrl Base Adquesto API URL
-     * @param string            $serviceId Service UUID
+     * @var PositioningSettings
+     */
+    private $positioningSettings;
+
+    /**
+     * @param string $apiUrl Base Adquesto API URL
+     * @param string $serviceId Service UUID
      * @param JavascriptStorage $javascriptStorage Implementation to persist javascript file contents
-     * @param HttpClient        $httpClient Implementation to fetch data from API
+     * @param HttpClient $httpClient Implementation to fetch data from API
+     * @param PositioningSettings $positioningSettings
      * @param ContextProvider[] $contextProviders Used to render template values
      */
     public function __construct($apiUrl, $serviceId, JavascriptStorage $javascriptStorage, HttpClient $httpClient,
-                                array $contextProviders = array())
+                                PositioningSettings $positioningSettings, array $contextProviders = array())
     {
         $this->apiUrl = $apiUrl;
         $this->serviceId = $serviceId;
         $this->javascriptStorage = $javascriptStorage;
         $this->httpClient = $httpClient;
         $this->contextProviders = $contextProviders;
+        $this->positioningSettings = $positioningSettings;
     }
 
     /**
@@ -155,10 +162,10 @@ class Content
             $height = $element->getAttribute('height');
             $hasCorrectSize = $width >= 150 && $height >= 150;
             if (!$allowFalseValues && $hasCorrectSize) {
-                return 300;
+                return $this->positioningSettings->getMediaCharPoints();
             }
             if ($allowFalseValues && ($hasCorrectSize || $width === false || $height === false)) {
-                return 300;
+                return $this->positioningSettings->getMediaCharPoints();
             }
         }
 
@@ -376,14 +383,14 @@ class Content
             $content .= $paragraph->outertext();
 
 
-            if ($numberOfCharacters >= 500 && !$questoHereIncluded) {
+            if ($numberOfCharacters >= $this->positioningSettings->getMainNumberOfChars() && !$questoHereIncluded) {
                 $numberOfCharacters = 0;
                 $content .= $containerMainQuest;
                 $questoHereIncluded = true;
             }
         }
 
-        if ($numberOfCharacters >= 1000) {
+        if ($numberOfCharacters >= $this->positioningSettings->getReminderNumberOfChars()) {
             $content .= $containerReminderQuest;
             $content .= '<script type="text/javascript">' . $javascript . '</script>';
 

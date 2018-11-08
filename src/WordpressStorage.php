@@ -20,6 +20,11 @@ class WordpressStorage implements JavascriptStorage
 
     public function valid()
     {
+        $content = $this->get();
+        if (!$content) {
+            return false;
+        }
+
         $lastUpdate = (int) get_option(static::OPTION_JAVASCRIPT_LAST_UPDATE_TIME);
         $previousDay = time() - (60 * 60 * 24);
 
@@ -28,6 +33,6 @@ class WordpressStorage implements JavascriptStorage
             return false;
         }
 
-        return (bool)$this->get();
+        return (bool)$content;
     }
 }

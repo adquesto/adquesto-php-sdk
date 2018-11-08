@@ -14,6 +14,7 @@ Create `Content` with your defaults to start serving ads.
 use Adquesto\SDK\Content;
 use Adquesto\SDK\InMemoryStorage;
 use Adquesto\SDK\CurlHttpClient;
+use Adquesto\SDK\PositioningSettings;
 
 $adquesto = new Content(
     # Adquesto API endpoint that provides latest javascript
@@ -22,7 +23,8 @@ $adquesto = new Content(
     'Paste Service UUID here',
     # Implementation that will hold javascript file contents
     new InMemoryStorage,
-    new CurlHttpClient
+    new CurlHttpClient,
+    PositioningSettings::factory(PositioningSettings::STRATEGY_UPPER)
 );
 ```
 
@@ -39,7 +41,11 @@ We provide two implementations: `WordpressStorage` and `InMemoryStorage`
 
 `httpClient` Implementation of HTTP client which is used to fetch JavaScript
 
-`contextProviders` An array of context providers which are used to get template values used in rendering javascript file.
+`positioningSettings` Instance of an PositioningSettings that returns values that are used to position a quest during rendering
+the content. There are two pre-defined strategies: `PositioningSettings::STRATEGY_UPPER` and `PositioningSettings::STRATEGY_LOWER`.
+Use `factory` method as a best practice. 
+
+`contextProviders` (`optional`) An array of context providers which are used to get template values used in rendering javascript file.
 There are ready to use implementations which are functionaly divided, i.e. `ElementsContextProvider`.
 
 Now, we can fetch javascript file that will eventually render ads.
