@@ -82,7 +82,6 @@ We provide method to help you place ad in best spot inside HTML content. To make
 * `htmlContent` which is an HTML of your content (eg. blog post)
 * `adContainerHtml` is an HTML of a container, which will hold ad (eg. `<div id="$mainQuestElementId"></div>`)
 * `reminderAdContainerHtml` being the same as above, only difference it will hold reminder ad (`<div id="$reminderQuestElementId"></div>`)
-*  `javascript` it output of the method above
 
 NOTE: `adContainerHtml` and `reminderAdContainerHtml` must be the same as those used when fetching javascript file.
 
@@ -90,12 +89,11 @@ NOTE: `adContainerHtml` and `reminderAdContainerHtml` must be the same as those 
 $preparedContent = $adquesto->autoPrepare(
     $htmlContent,
     $adContainerHtml,
-    $reminderAdContainerHtml,
-    $javascript
+    $reminderAdContainerHtml
 );
 ```
 
-Now `preparedContent` is ready to be placed on website.
+### Manual Ad placement
 
 You can also use function below to find `<div class="questo-here"></div>` and replace with the ad:
 
@@ -103,8 +101,7 @@ You can also use function below to find `<div class="questo-here"></div>` and re
 $preparedContent = $adquesto->manualPrepare(
     $htmlContent,
     $adContainerHtml,
-    $reminderAdContainerHtml,
-    $javascript
+    $reminderAdContainerHtml
 );
 ```
 
@@ -115,6 +112,16 @@ $hasQuesto = $adquesto->hasQuestoInContent($content);
 ```
 
 The function will return `true` if `<div class="questo-here"></div>` exists in the content.
+
+### Prepared content
+
+Both `autoPrepare` and `manualPrepare` return `PreparedContent` instances which in addition to hold the content also
+has a flag which tells wether it is valid to display a questo - `isAdReady` method.
+
+To apply JavaScript plugin source:
+```php
+$preparedContent->setJavaScript($javascript);
+``` 
 
 ## Overview
 

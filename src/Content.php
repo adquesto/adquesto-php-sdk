@@ -305,6 +305,13 @@ class Content
         return (bool)preg_match('/class="(.*)' . self::MANUAL_QUEST_CLASS . '(.*)"/m', $html);
     }
 
+    private function addClass($value, $cssClass)
+    {
+        $cssClasses = explode(' ' , $value);
+        $cssClasses[] = $cssClass;
+        return implode(' ', $cssClasses);
+    }
+
     /**
      * Check Content::MANUAL_QUEST_CLASS class in the content, if exists put quests in the content
      *
@@ -340,17 +347,10 @@ class Content
             $content .= $containerReminderQuest;
             $content .= '<script type="text/javascript">' . $javascript . '</script>';
 
-            return $content;
+            return new PreparedContent($content, true);
         }
 
-        return $originalContent;
-    }
-
-    private function addClass($value, $cssClass)
-    {
-        $cssClasses = explode(' ' , $value);
-        $cssClasses[] = $cssClass;
-        return implode(' ', $cssClasses);
+        return new PreparedContent($content, false);
     }
 
     /**
@@ -359,10 +359,9 @@ class Content
      * @param string $originalContent
      * @param string $containerMainQuest
      * @param string $containerReminderQuest
-     * @param string $javascript
      * @return string
      */
-    public function autoPrepare($originalContent, $containerMainQuest, $containerReminderQuest, $javascript)
+    public function autoPrepare($originalContent, $containerMainQuest, $containerReminderQuest)
     {
         $paragraphs = $this->getChildNodesFromContent($originalContent);
         $content = $this->getStructureDataPaywall();
@@ -382,7 +381,6 @@ class Content
 
             $content .= $paragraph->outertext();
 
-
             if ($numberOfCharacters >= $this->positioningSettings->getMainNumberOfChars() && !$questoHereIncluded) {
                 $numberOfCharacters = 0;
                 $content .= $containerMainQuest;
@@ -392,11 +390,10 @@ class Content
 
         if ($numberOfCharacters >= $this->positioningSettings->getReminderNumberOfChars()) {
             $content .= $containerReminderQuest;
-            $content .= '<script type="text/javascript">' . $javascript . '</script>';
 
-            return $content;
+            return new PreparedContent($content, true);
         }
 
-        return $originalContent;
+        return new PreparedContent($content, false);
     }
 }
