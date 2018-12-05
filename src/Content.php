@@ -318,10 +318,9 @@ class Content
      * @param string $originalContent
      * @param string $containerMainQuest
      * @param string $containerReminderQuest
-     * @param string $javascript
-     * @return string|bool
+     * @return PreparedContent
      */
-    public function manualPrepare($originalContent, $containerMainQuest, $containerReminderQuest, $javascript)
+    public function manualPrepare($originalContent, $containerMainQuest, $containerReminderQuest)
     {
         $content = $this->getStructureDataPaywall();
         $paragraphs = $this->getChildNodesFromContent($originalContent);
@@ -345,7 +344,6 @@ class Content
             }
 
             $content .= $containerReminderQuest;
-            $content .= '<script type="text/javascript">' . $javascript . '</script>';
 
             return new PreparedContent($content, true);
         }
@@ -359,7 +357,7 @@ class Content
      * @param string $originalContent
      * @param string $containerMainQuest
      * @param string $containerReminderQuest
-     * @return string
+     * @return PreparedContent
      */
     public function autoPrepare($originalContent, $containerMainQuest, $containerReminderQuest)
     {
