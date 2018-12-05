@@ -14,7 +14,7 @@ class PreparedContent
         $this->isAdReady = $isAdReady;
     }
 
-    public function isAdRead()
+    public function isAdReady()
     {
         return $this->isAdReady;
     }
