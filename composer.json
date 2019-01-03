@@ -2,9 +2,6 @@
     "name": "adquesto/adquesto-php-sdk",
     "description": "Adquesto PHP integration toolkit",
     "type": "library",
-    "require": {
-        "sunra/php-simple-html-dom-parser": "v1.5.2"
-    },
     "require-dev": {
         "phpunit/phpunit": "^7.2"
     },
@@ -21,5 +18,8 @@
     "suggest": {
         "ext-curl": "Needed to support CurlHttpClient implementation",
         "ext-json": "Needed to provide Subscribers login via OAuth"
+    },
+    "require": {
+        "kub-at/php-simple-html-dom-parser": "^1.7"
     }
 }
