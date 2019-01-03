@@ -15,8 +15,10 @@ class SubscriberManagerTest extends TestCase
         $oauthClient = $this->createMock(OAuth2Client::class);
         $oauthClient->method('accessToken')->willReturn('access_token_value');
         $oauthClient->method('me')->willReturn([
+                'uid' => 1,
                 'email' => 'test@email.com',
                 'subscriptionDate' => '2018-01-01 00:01:00',
+                'recurringPayments' => false,
             ]);
         $storage = $this->createMock(SubscriberStorage::class);
 
