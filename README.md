@@ -2,6 +2,10 @@
 
 Easy custom integration with only few steps required to start displaying ads.
 
+
+[![Travis-ci](https://api.travis-ci.org/adquesto/adquesto-php-sdk.svg?branch=master)](https://travis-ci.org/adquesto/adquesto-php-sdk/)
+
+
 ## Install
 
 `composer require adquesto/adquesto-php-sdk`
