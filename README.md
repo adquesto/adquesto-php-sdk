@@ -95,7 +95,7 @@ $preparedContent = $adquesto->autoPrepare(
 
 ### Manual Ad placement
 
-You can also use function below to find `<div class="questo-here"></div>` and replace with the ad:
+You can also use function below to find `<div class="questo-should-be-inserted-here"></div>` and replace with the ad:
 
 ```php
 $preparedContent = $adquesto->manualPrepare(
