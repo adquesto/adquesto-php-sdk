@@ -2,8 +2,8 @@
 
 namespace Adquesto\SDK;
 
-use simplehtmldom_1_5\simple_html_dom_node;
-use Sunra\PhpSimple\HtmlDomParser;
+use KubAT\PhpSimple\HtmlDomParser;
+use simple_html_dom\simple_html_dom_node;
 
 class Content
 {

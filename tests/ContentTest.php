@@ -1,0 +1,18 @@
+<?php
+
+namespace Adquesto\SDK\Tests;
+
+use PHPUnit\Framework\TestCase;
+use Adquesto\SDK\Content;
+
+
+class ContentTest extends TestCase
+{
+    function testGetChildNodesFromContent()
+    {
+        $html = '<div class="header"><h1>HEADER</h1></div><div class="p2">2</div><div class="p2">P2</div>';
+        $nodes = Content::getChildNodesFromContent($html);
+        $this->assertEquals(count($nodes), 3);
+        $this->assertInstanceOf('\simple_html_dom\simple_html_dom_node', $nodes[0]);
+    }
+}
