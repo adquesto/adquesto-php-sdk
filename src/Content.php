@@ -283,7 +283,10 @@ class Content
     public function getChildNodesFromContent($content)
     {
         $wrapperId = 'adquestoWrapper';
-        $dom = HtmlDomParser::str_get_html(sprintf('<div id="%s">%s</div>', $wrapperId, $content));
+        $str = sprintf('<div id="%s">%s</div>', $wrapperId, $content);
+        $dom = HtmlDomParser::str_get_html(
+            $str, $lowercase=true, $forceTagsClosed=true, $target_charset=DEFAULT_TARGET_CHARSET, $stripRN=false
+        );
         return $dom->getElementById($wrapperId)->childNodes();
     }
 
