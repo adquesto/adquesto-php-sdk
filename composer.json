@@ -15,11 +15,15 @@
             "Adquesto\\SDK\\Tests\\": "tests/"
         }
     },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
+    },
     "suggest": {
         "ext-curl": "Needed to support CurlHttpClient implementation",
         "ext-json": "Needed to provide Subscribers login via OAuth"
     },
     "require": {
+        "php": "^5.3.2 || ^7.0",
         "kub-at/php-simple-html-dom-parser": "^1.7"
     }
 }
