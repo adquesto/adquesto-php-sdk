@@ -277,3 +277,7 @@ if ($javascript) {
     $content->getStorage()->set($javascript);
 }
 ```
+
+### JavaScript Events
+
+Click [here](JSPLUGIN.md#Events) to read about JavaScript events.
