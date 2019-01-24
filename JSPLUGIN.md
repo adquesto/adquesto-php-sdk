@@ -2,15 +2,14 @@
 
 ## Events
 
-The Adquesto plugin emits events related to the change of state. Events can be used for integration.
+The Adquesto plugin emits events when it changes its state. Events can be used for integration of frontend actions.
 
 ### Available events
 
-* `adquesto.ready` - triggered when library loaded and ready
-* `adquesto.emissionskip` - triggered when there is no quest to display
-* `adquesto.emissionstart` - triggered after site blur, directly before quest display
-* `adquesto.emissionend` - triggered after site unblur, so after correct answer
-* `adquesto.subscriptiontoggle` - triggered when displaying the subscription board
+* `adquesto.ready` - triggered when the plugin is loaded and ready
+* `adquesto.emissionskip` - triggered when there is no adquest to display or reader has an active subscription (the page content is available without showing an adquest)
+* `adquesto.emissionstart` - triggered after the page content becomes blurred (before displaying adquest)
+* `adquesto.emissionend` - triggered after the page blur is removed and page content is unveiled (after correct answer)
 
 ### JavaScript events handling example
 
@@ -26,8 +25,5 @@ document.addEventListener('adquesto.emissionend', function(event) {
 }, true);
 document.addEventListener('adquesto.emissionskip', function(event) {
   console.log('adquesto.emissionskip', event);
-}, true);
-document.addEventListener('adquesto.subscriptiontoggle', function(event) {
-  console.log('adquesto.subscriptiontoggle', event);
 }, true);
 ```
