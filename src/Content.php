@@ -104,14 +104,15 @@ class Content
     }
 
     /**
+     * @param boolean $showErrors Show errors when http client error/timeout occures
      * @return string
      */
-    public function requestJavascript()
+    public function requestJavascript($showErrors = false)
     {
         $response = $this->httpClient->get(
             sprintf('%s%s/javascript', $this->apiUrl, $this->serviceId()),
             array(),
-            true
+            $showErrors
         );
 
         return $response;
@@ -119,12 +120,13 @@ class Content
 
     /**
      * @param mixed $contextProviders An array or single ContextProvider instance
+     * @param boolean $showErrors Show errors when http client error/timeout occures
      * @return string
      */
-    public function javascript($contextProviders = array())
+    public function javascript($contextProviders = array(), $showErrors = false)
     {
         if (!$this->javascriptStorage->valid()) {
-            $remoteJavascript = $this->requestJavascript();
+            $remoteJavascript = $this->requestJavascript($showErrors);
 
             if ($remoteJavascript) {
                 $this->javascriptStorage->set($remoteJavascript);
