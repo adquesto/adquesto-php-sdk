@@ -2,9 +2,7 @@
 
 Easy custom integration with only few steps required to start displaying ads.
 
-
 [![Travis-ci](https://api.travis-ci.org/adquesto/adquesto-php-sdk.svg?branch=master)](https://travis-ci.org/adquesto/adquesto-php-sdk/)
-
 
 ## Install
 
@@ -47,7 +45,7 @@ We provide two implementations: `WordpressStorage` and `InMemoryStorage`
 
 `positioningSettings` Instance of an PositioningSettings that returns values that are used to position a quest during rendering
 the content. There are two pre-defined strategies: `PositioningSettings::STRATEGY_UPPER` and `PositioningSettings::STRATEGY_LOWER`.
-Use `factory` method as a best practice. 
+Use `factory` method as a best practice.
 
 `contextProviders` (`optional`) An array of context providers which are used to get template values used in rendering javascript file.
 There are ready to use implementations which are functionaly divided, i.e. `ElementsContextProvider`.
@@ -72,7 +70,7 @@ responsible for replacing placeholders inside javascript file fetched from API w
 integration specific values.
 
 Example above will return javascript source code what will use random IDs as containers for ads.
-It's then possible to fetch generated IDs by using methods: 
+It's then possible to fetch generated IDs by using methods:
 
 ```php
 $mainQuestElementId = $elementsProviders->mainQuestId();
@@ -123,9 +121,10 @@ Both `autoPrepare` and `manualPrepare` return `PreparedContent` instances which 
 has a flag which tells wether it is valid to display a questo - `isAdReady` method.
 
 To apply JavaScript plugin source:
+
 ```php
 $preparedContent->setJavaScript($javascript);
-``` 
+```
 
 ## Overview
 
@@ -152,8 +151,7 @@ Most important context provider which tells names of HTML containers that are us
 * `mainQuestId` Main ad element ID name (eg. `questo-container`)
 * `reminderQuestId` Reminder ad element ID (eg. `questo-reminder-container`)
 * `isDraft` Should Ad be displayed as a draft (false as default)
-* `hasActiveCampaigns` bool or callable that should hold information about existing campaigns for your Service - changes are 
-triggered using webhook and value is in the response along Service status
+* `hasActiveCampaigns` bool or callable that should hold information about existing campaigns for your Service - changes are triggered using webhook and value is in the response along Service status
 
 By default both `mainQuestId` and `reminderQuestId` are generated with random string.
 
@@ -195,8 +193,8 @@ use Adquesto\SDK\CurlHttpClient;
 $oauth2Client = new OAuth2Client(
     new CurlHttpClient,
     'client_id_here',
-    'http://adquesto.com/subscriber', 
-    'http://api.adquesto.com/oauth2/token', 
+    'http://adquesto.com/subscriber',
+    'http://api.adquesto.com/oauth2/token',
     'http://api.adquesto.com/oauth2/me',
     'your_redirect_uri'
 );
@@ -211,15 +209,14 @@ $subscriberManager = new SubscriberManager($oauth2Client, new SubscriberSessionS
 $subsciber = $subscriberManager->handleRedirect($_GET['code']);
 ```
 
-* Subscriber is now ready to be used. Thanks to `SubscriberSessionStorage` that information is persisted in session, so each request will
-have information about current Subscriber.
+* Subscriber is now ready to be used. Thanks to `SubscriberSessionStorage` that information is persisted in session, so each request will have information about current Subscriber.
 
 NOTE: It's important to run `$subscriber->isSubscriptionValid()` before anything that is related to ad-free experience.
 
 ### Webhooks
 
 We will send POST request to you Service webhook URL with `form-data` with one of the following actions. Each
-action represent changes that need to be undertaken on your end for coherent experience. 
+action represent changes that need to be undertaken on your end for coherent experience.
 
 You should respond with JSON `{"status": "OK"}`. If not, we will retry using exponential back-off strategy for 10 times.
 
@@ -257,15 +254,13 @@ This one should be used when fetching Javascript plugin, as it tells whether to 
 
 Action: `questo_update_subscription_option`
 
-This one is fired when Subscription feature is toggled either on or off. Now to fetch the actual value please use same
-method as described for `Service status update`.
+This one is fired when Subscription feature is toggled either on or off. Now to fetch the actual value please use same method as described for `Service status update`.
 
 #### Forced Javascript update
 
 Action: `questo_force_update_javascript`
 
-From time to time we might call your endpoint to tell that there is new Javascript file available 
-so that you can update it in your Storage.
+From time to time we might call your endpoint to tell that there is new Javascript file available so that you can update it in your Storage.
 
 ![Image](https://www.websequencediagrams.com/cgi-bin/cdraw?lz=dGl0bGUgSmF2YXNjcmlwdCBmb3JjZSB1cGRhdGUgcHJvY2VkdXJlCgpBZHF1ZXN0by0-SW50ZWdyYXRpb246IFBPU1QgL3lvdXItAC4GLWVuZHBvaW50IHdpdGggAC8GXwBRBV8AUAZfagBkCmFjdGlvbgojIG5vdGUgcmlnaHQgb2YgQmFja2VuZDogUmVhZGVyIFVVSUQgaXMgZ2VuZXJhdGVkCgAiDgCBBg1JbnZhbGkAgTsFU3RvcmFnZQoAgSgLLT4AgUIIOiBHRVQgbmV3AIF0CwCBTxlOABkOAGQbU2F2ZSBpdCBpbgB2CQBoGFJlc3BvbmQAgiQGSlNPTiBzdGF0dXMgT0sAgVsGbGVmAIILBQCBKQpJZiBub3QsIHdlIHdpbGwgcmV0cnkKCiNCcm93c2VyLT4AAgc6IE5leHQgZ2V0IHIAgj4GcmUAgzwFCiMAglwPACgIVXNlIGRpc2sgY2FjaGUARg0AgwYIR2V0IFF1ZXMAg1UHACQFZACDGAwK&s=patent)
 
@@ -281,3 +276,9 @@ if ($javascript) {
 ### JavaScript Events
 
 Click [here](JSPLUGIN.md#Events) to read about JavaScript events.
+
+### Examples
+
+* [Auto prepare](examples/example_autoprepare.php)
+* [Manual prepare](examples/example_manualprepare.php)
+* [Webhook](examples/example_webhook.php)

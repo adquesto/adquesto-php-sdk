@@ -6,8 +6,8 @@ use Adquesto\SDK\InMemoryStorage;
 include './vendor/autoload.php';
 
 $content = new \Adquesto\SDK\Content(
-    'API URL',
-    'Service UUID',
+    'https://api.adquesto.com/v1/publishers/services/',  // API url
+    'SERVICE-UUID',
     new InMemoryStorage,
     new CurlHttpClient
 );
