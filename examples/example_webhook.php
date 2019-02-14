@@ -31,7 +31,7 @@ function get_options() {
 
 // basic webhook endpoint example
 $response = ['status' => 'OK'];
-$action = isset($options['status']) ? strtolower($options['status']) : null;
+$action = isset($_POST['action']) ? strtolower($_POST['action']) : null;
 
 switch ($action) {
     case 'questo_update_service_status_option':
