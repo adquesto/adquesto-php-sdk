@@ -10,7 +10,7 @@ use Adquesto\SDK\PositioningSettings;
 use Adquesto\SDK\ElementsContextProvider;
 
 const API_URL = 'https://api.adquesto.com/v1/publishers/services/';
-CONST SERVICE_UUID = '__paste Service UUID here__';
+const SERVICE_UUID = '__paste Service UUID here__';
 
 $options = [
     'status' => 0,
