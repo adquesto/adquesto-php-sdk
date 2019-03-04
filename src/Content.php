@@ -289,7 +289,8 @@ class Content
         $dom = HtmlDomParser::str_get_html(
             $str, $lowercase=true, $forceTagsClosed=true, $target_charset=DEFAULT_TARGET_CHARSET, $stripRN=false
         );
-        return $dom->getElementById($wrapperId)->childNodes();
+	// ->childNodes() removes text tags like [ngg] that's why we use ->nodes here
+	return $dom->getElementById($wrapperId)->nodes;
     }
 
     /**
