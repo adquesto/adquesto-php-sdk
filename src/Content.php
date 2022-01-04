@@ -51,7 +51,7 @@ class Content
     public function __construct($apiUrl, $serviceId, JavascriptStorage $javascriptStorage, HttpClient $httpClient,
                                 PositioningSettings $positioningSettings, array $contextProviders = array())
     {
-        $this->apiUrl = $apiUrl;
+        $this->apiUrl = rtrim($apiUrl, '/') . '/';
         $this->serviceId = $serviceId;
         $this->javascriptStorage = $javascriptStorage;
         $this->httpClient = $httpClient;
