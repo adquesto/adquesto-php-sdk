@@ -13,7 +13,7 @@ class Content
     /**
      * @var string
      */
-    private $apiUrl;
+    private $formattedApiUrl;
 
     /**
      * @var string
@@ -51,7 +51,7 @@ class Content
     public function __construct($apiUrl, $serviceId, JavascriptStorage $javascriptStorage, HttpClient $httpClient,
                                 PositioningSettings $positioningSettings, array $contextProviders = array())
     {
-        $this->apiUrl = rtrim($apiUrl, '/') . '/';
+        $this->formattedApiUrl = rtrim($apiUrl, '/') . '/';
         $this->serviceId = $serviceId;
         $this->javascriptStorage = $javascriptStorage;
         $this->httpClient = $httpClient;
@@ -110,7 +110,7 @@ class Content
     public function requestJavascript($showErrors = false)
     {
         $response = $this->httpClient->get(
-            sprintf('%s%s/javascript', $this->apiUrl, $this->serviceId()),
+            sprintf('%s%s/javascript', $this->formattedApiUrl, $this->serviceId()),
             array(),
             $showErrors
         );
